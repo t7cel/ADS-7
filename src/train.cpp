@@ -1,54 +1,54 @@
 // Copyright 2021 NNTU-CS
 #include "train.h"
-Train::Train() : first(nullptr), countOp(0) {}
+Train::Train() : head(nullptr), operationCount(0) {}
 
-void Train::addCar(bool lampFactor) {
-  Car* newCar = new Car{lampFactor, nullptr, nullptr};
+void Train::addCar(bool initialLightState) {
+  Car* newCar = new Car{initialLightState, nullptr, nullptr};
 
-  if (first == nullptr) {
+  if (head == nullptr) {
     newCar->next = newCar;
     newCar->prev = newCar;
-    first = newCar;
+    head = newCar;
   } else {
-    Car* lastCar = first->prev;
-    newCar->next = first;
+    Car* lastCar = head->prev;
+    newCar->next = head;
     newCar->prev = lastCar;
     lastCar->next = newCar;
-    first->prev = newCar;
+    head->prev = newCar;
   }
 }
 
 int Train::getLength() {
-  countOp = 0;
-  if (first == nullptr) {
+  operationCount = 0;
+  if (head == nullptr) {
     return 0;
   }
 
-  Car* crnt = first;
-  crnt->light = true;
+  Car* currentCar = head;
+  currentCar->light = true;
 
   while (true) {
     int countOfSteps = 0;
 
     do {
-      crnt = crnt->next;
+      currentCar = currentCar->next;
       countOfSteps++;
-      countOp++;
-    } while (!crnt->light);
+      operationCount++;
+    } while (!currentCar->light);
 
-    crnt->light = false;
+    currentCar->light = false;
 
     for (int i = 0; i < countOfSteps; i++) {
-      crnt = crnt->prev;
-      countOp++;
+      currentCar = currentCar->prev;
+      operationCount++;
     }
 
-    if (!crnt->light) {
+    if (!currentCar->light) {
       return countOfSteps;
     }
   }
 }
 
 int Train::getOpCount() {
-  return countOp;
+  return operationCount;
 }
